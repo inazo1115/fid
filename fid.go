@@ -98,6 +98,10 @@ func (fid *FID) select_(val bool, ith, from, to int) (int, error) {
 	panic("unreach here")
 }
 
+func (fid *FID) Bits() *bitarray.BitArray {
+	return fid.bits
+}
+
 func (fid *FID) String() string {
 	ret := "FID {\n"
 	ret += fmt.Sprintf("  bits: %v\n", fid.bits.String())

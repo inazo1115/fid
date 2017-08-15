@@ -62,7 +62,18 @@ func (fid *FID) Rank(val bool, idx int) (int, error) {
 	if idx >= fid.bits.Size() {
 		return 0, fmt.Errorf("out of index: %d >= %d", idx, fid.bits.Size())
 	}
-	t := fid.lMap[idx/fid.lBitSize] + fid.sMap[idx/fid.sBitSize] + fid.pMap[idx%fid.sBitSize]
+
+	l := fid.lMap[idx/fid.lBitSize]
+	s := fid.sMap[idx/fid.sBitSize]
+	from := (idx / fid.sBitSize) * fid.sBitSize
+	to := from + fid.sBitSize
+	if to > fid.bits.Size() {
+		to = fid.bits.Size()
+	}
+	sub, _ := fid.bits.SubArray(from, to)
+	p := fid.pMap[sub.Int()&((idx%fid.sBitSize)*2)]
+	t := l + s + p
+
 	if val {
 		return t, nil
 	} else {
